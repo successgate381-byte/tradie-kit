@@ -40,7 +40,8 @@ function lines(s,withGst,head,n=8){let h=`<div class="ln th ${withGst?'':'ni'}">
  for(let i=1;i<=n;i++)h+=`<div class="ln ${withGst?'':'ni'}"><span class="nn">${i}</span><input class="d" list="dl" placeholder="Description" data-s="${s}" data-k="d${i}"><input class="q" inputmode="decimal" placeholder="Qty" data-s="${s}" data-k="q${i}"><input class="p m" inputmode="decimal" placeholder="$0.00" data-s="${s}" data-k="p${i}">${withGst?`<select data-s="${s}" data-k="g${i}"><option>Yes</option><option>No</option></select>`:''}<div class="am" id="c-a${i}"></div></div>`;return h}
 const tr=(l,id,cls='')=>`<div class="tr ${cls}"><span id="${id}l">${l}</span><span id="${id}"></span></div>`;
 const payBlock=`${sec('PAYMENT DETAILS')}<div class="pay" id="c-pay1"></div><div class="pay" id="c-pay2"></div>`;
-const btns=`<div class="btns"><button class="b o" id="pdf">Save as PDF</button><button class="b g" id="clr">Clear this document</button></div><div class="note">Save as PDF: tap the button, then choose Save as PDF as the printer. Your work is saved on this device only.</div>`;
+const DOCT=['Quote','Tax Invoice','Invoice','Variation'];
+const btns=`<div class="btns"><button class="b" id="pv">Preview</button><button class="b o" id="pdf">Save as PDF</button><button class="b g" id="clr">Clear this document</button></div><div class="note">Preview and Save as PDF show the clean finished document, without the empty boxes. In the print window choose Save as PDF as the printer. Your work is saved on this device only.</div>`;
 
 function view(){
  if(tab==='Start Here'){const st=[['1','Open My Details. Type your business name, ABN, trade, bank name, BSB and account number in the cream boxes. You only do this once.'],['2','Not sure if you charge GST? Pick Yes or No on My Details. Yes = use Tax Invoice. No = use Invoice. The page warns you if you pick the wrong tab.'],['3','Every new job: open Quote, Tax Invoice or Invoice and type over the cream boxes. The sums work themselves out. The Description box suggests common jobs for your trade. Type your own words any time.'],['4','Dates: pick them from the calendar. The due date is worked out for you.'],['5','Send it: tap Save as PDF at the bottom of the document, then Clear this document for the next job.'],['6','Customer wants to pay by card? Paste your card reader or payment link on My Details. Never write card numbers on a quote or invoice, and never ask for them by text or email.']];
@@ -94,20 +95,42 @@ function vc(){const s='Variation',R=reg(),v=lc(s,4,R),qt=lc('Quote',8,R,false).t
 function rc(){const s='Rate Calculator',need=num(get(s,'wage'))+num(get(s,'costs')),hy=num(get(s,'weeks'))*num(get(s,'hrs')),rt=hy>0?r2(need/hy):0;
  set('c-need',usd(need));set('c-hy',hy.toLocaleString('en-AU'));set('rt',usd(rt));set('c-rg',usd(reg()?r2(rt*(1+rate())):rt));
  const p=num(get(s,'part')),sp=r2(p*(1+num(get(s,'mk'))/100)),pf=r2(sp-p);set('c-sp',usd(sp));set('c-pf',usd(pf));set('c-mg',(sp>0?pf/sp*100:0).toFixed(1)+'%')}
-function calc(){if(tab==='Variation')vc();else if(tab==='Rate Calculator')rc();else if($('#c-pay1'))dc()}
+function pp(){const s=tab,P=$('#paper');if(!P)return;const D=ST.D,g=k=>get(s,k),q=s==='Quote',ti=s==='Tax Invoice',vr=s==='Variation',R=reg(),show=ti||((q||vr)&&R),n=vr?4:8,v=lc(s,n,show,false);
+ const T={Quote:'QUOTE','Tax Invoice':'TAX INVOICE',Invoice:'INVOICE',Variation:'VARIATION'}[s],dt=g('date');
+ const ln=(l,x)=>has(x)?`<p><b>${l}:</b> ${esc(x).replace(/\n/g,'<br>')}</p>`:'';
+ const meta=[[(vr?'Variation':q?'Quote':'Invoice')+' no.',g('no')],['Date',fmtD(dt)],q?['Valid until',addD(dt,30)]:vr?['Quote / job no.',g('qno')]:['Due date',addD(dt,num(D.terms))],vr&&has(g('days'))?['Extra days',g('days')]:[]].filter(m=>has(m[1])).map(m=>`<b>${m[0]}:</b> ${esc(m[1])}`).join(' &nbsp;|&nbsp; ');
+ let rows='';for(let i=1;i<=n;i++){const a=has(g('q'+i))&&has(g('p'+i));if(!a&&!has(g('d'+i)))continue;rows+=`<tr><td>${esc(g('d'+i))}</td><td class="n">${esc(g('q'+i))}</td><td class="n">${a?usd(num(g('p'+i))):''}</td>${show?`<td>${g('g'+i)==='No'?'No':'Yes'}</td>`:''}<td class="n">${a?usd(r2(num(g('q'+i))*num(g('p'+i)))):''}</td></tr>`}
+ const tt=(l,x,b)=>`<div class="tr ${b||''}"><span>${l}</span><span>${x}</span></div>`;
+ let h=`<div class="band"><b>${esc(D.name||'Your Business Name')}</b><i>${T}</i></div><div class="sub">${[D.abn&&'ABN '+D.abn,D.lic&&'Licence '+D.lic,D.phone,D.email].filter(has).map(esc).join('   |   ')}</div>`;
+ h+=`<p style="margin-top:10px">${meta}</p>`+ln(ti?'Bill to':q?'Prepared for':'Customer',(g('cust')||'')+(has(g('cabn'))?' (ABN '+g('cabn')+')':''))+ln('Phone / email',g('phone'))+ln('Address',g('addr'))+ln(q||vr?'Job site':'Job address',g('site'));
+ if(q){h+=ln('Scope of work',g('scope'))+ln('Price type',g('ptype')||'Fixed price')}if(vr)h+=ln('Why the change',g('why')||'Customer asked for it')+ln('What is changing',g('desc'));
+ if(rows)h+=`<table><tr><th>Description</th><th class="n">Qty</th><th class="n">${q||vr?'Unit price':'Price'}${show?' (ex GST)':''}</th>${show?'<th>GST?</th>':''}<th class="n">Amount${show?' (ex GST)':''}</th></tr>${rows}</table>`;
+ h+=tt('Subtotal'+(show?' (ex GST)':''),usd(v.sub))+(show?tt(gl(show),usd(v.g)):'')+tt(vr?'THIS VARIATION'+(show?' (incl GST)':''):ti?'TOTAL PAYABLE (incl GST)':q?'TOTAL'+(show?' (incl GST)':''):'TOTAL PAYABLE',usd(v.tot),'big');
+ if(ti){const f=[1,2,3,4,5,6,7,8].some(i=>g('g'+i)==='No'&&has(g('q'+i))&&has(g('p'+i)));h+=`<p class="sm">${f?'GST amount is shown above. Items marked No are GST-free.':'Total price includes GST of '+usd(v.g)}</p>`}
+ if(q)h+=`<p class="sm">${R?'All prices exclude GST. GST is added to items marked Yes.':'Not registered for GST. No GST charged.'}</p>`;
+ if(s==='Invoice')h+='<p class="sm">GST not applicable. Supplier is not registered for GST.</p>';
+ if(q){let dp=num(g('dep'));if(dp>1)dp/=100;h+=ln('Inclusions',g('incl'))+ln('Exclusions',g('excl'))+(has(g('dep'))?`<p><b>Deposit:</b> ${usd(r2(v.tot*dp))} due on acceptance.${has(g('bal'))?' <b>Balance:</b> '+esc(g('bal'))+'.':''}</p>`:ln('Balance due',g('bal')))+(has(g('fee'))?`<p><b>Quote fee:</b> ${esc(g('fee'))}</p>`:'')}
+ if(vr){const qt=lc('Quote',8,R,false).tot,o=has(g('orig'))?num(g('orig')):qt;h+=tt('Original quote total',usd(o))+tt('Earlier approved variations',usd(num(g('prev'))))+tt('This variation',usd(v.tot))+tt('NEW TOTAL',usd(r2(o+num(g('prev'))+v.tot)),'big')+ln('How it gets paid',g('pay'))}
+ if(!vr&&(has(D.bank)||has(D.acno)))h+=`<p style="margin-top:10px"><b>Payment details</b></p><p><b>Bank:</b> ${esc(D.bank)} &nbsp;|&nbsp; <b>Account name:</b> ${esc(D.acct)} &nbsp;|&nbsp; <b>BSB:</b> ${esc(D.bsb)} &nbsp;|&nbsp; <b>Account no.:</b> ${esc(D.acno)}</p><p>${[has(D.payid)&&'PayID: '+esc(D.payid),has(D.card)&&'Pay by card: '+esc(D.card),'Reference: '+esc(g('no')||'')].filter(Boolean).join(' &nbsp;|&nbsp; ')}</p>`;
+ if(ti||s==='Invoice')h+=`<p>Payment due within ${esc(D.terms||'')} days of the invoice date.</p>`;
+ if(q)h+='<p class="sm">Variations: any change to the scope of work will be quoted and agreed in writing before the work starts.</p>';
+ if(q||vr){const f=k=>has(g(k))?(k==='ad'?fmtD(g(k)):esc(g(k))):'&nbsp;';h+=`<p style="margin-top:14px"><b>${vr?'I approve this variation, the extra cost and any extra days shown above. The extra work starts after I approve.':'I accept this quote.'}</b></p><div class="sg"><div>Name: ${f('an')}</div><div>Signature: ${f('as')}</div><div>Date: ${f('ad')}</div></div>`}
+ P.innerHTML=h+`<p class="sm" style="margin-top:14px">${FOOT}</p>`}
+function calc(){if(tab==='Variation'){vc();pp()}else if(tab==='Rate Calculator')rc();else if($('#c-pay1')){dc();pp()}}
 
 /* ---------- wiring ---------- */
 const mf=e=>{if(e.classList.contains('m')&&has(e.value))e.value=usd(num(e.value))};
 function fill(){$$('[data-k]').forEach(e=>{const v=get(e.dataset.s,e.dataset.k);if(v!=null)e.value=v;else if(e.tagName==='SELECT'&&e.dataset.s!=='D')e.value='Yes';mf(e);if(e.tagName==='TEXTAREA')grow(e)})}
 const grow=e=>{e.style.height='auto';e.style.height=e.scrollHeight+'px'};
 const setList=()=>{$('#dl').innerHTML=LISTS[ST.D.trade].split('|').map(x=>`<option value="${esc(x)}">`).join('')};
-function go(t){tab=t;$('#nav').innerHTML=TABS.map(x=>`<button role="tab" aria-selected="${x===t}" data-t="${x}">${x}</button>`).join('');$('#m').innerHTML=view();fill();calc();setList();scrollTo(0,0)}
+function go(t){tab=t;document.body.classList.remove('pv');document.body.classList.toggle('hasp',DOCT.includes(t));$('#nav').innerHTML=TABS.map(x=>`<button role="tab" aria-selected="${x===t}" data-t="${x}">${x}</button>`).join('');$('#m').innerHTML=view()+(DOCT.includes(t)?'<div class="pbar"><button class="b g" id="bk">Back to editing</button><button class="b o" id="pdf2">Save as PDF</button></div><div id="paper"></div>':'');fill();calc();setList();scrollTo(0,0)}
 $('#nav').onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.t)};
 document.addEventListener('input',e=>{const t=e.target;if(!t.dataset.k)return;put(t.dataset.s,t.dataset.k,t.value);if(t.tagName==='TEXTAREA')grow(t);if(t.dataset.k==='trade')setList();calc()});
 document.addEventListener('change',e=>{const t=e.target;if(!t.dataset.k)return;if(t.dataset.k==='trade')setList();calc()});
 document.addEventListener('focusin',e=>{const t=e.target;if(t.classList&&t.classList.contains('m')&&has(t.value)){t.value=num(t.value)||'';t.select&&t.select()}});
 document.addEventListener('focusout',e=>{const t=e.target;if(t.classList&&t.classList.contains('m')){put(t.dataset.s,t.dataset.k,t.value);mf(t);put(t.dataset.s,t.dataset.k,t.value);calc()}});
 document.addEventListener('click',e=>{const t=e.target;
- if(t.id==='pdf'){const o=document.title;document.title=`${tab} ${get(tab,'no')||''} ${ST.D.name||''}`.trim();window.print();document.title=o}
+ if(t.id==='pv'){document.body.classList.add('pv');scrollTo(0,0)}if(t.id==='bk')document.body.classList.remove('pv');
+ if(t.id==='pdf'||t.id==='pdf2'){const o=document.title;document.title=`${tab} ${get(tab,'no')||''} ${ST.D.name||''}`.trim();window.print();document.title=o}
  if(t.id==='clr'&&confirm('Clear this document? Your business details stay.')){ST.T[tab]={};save();go(tab)}});
 go('Start Here');
