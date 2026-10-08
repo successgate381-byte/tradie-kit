@@ -1,0 +1,11 @@
+{
+  "name": "tradie-kit",
+  "private": true,
+  "scripts": {
+    "typecheck": "node scripts/guard.mjs syntax",
+    "lint": "node scripts/guard.mjs lock",
+    "test": "python3 tests/e2e.py",
+    "check": "npm run typecheck --silent && npm run lint --silent && npm run test --silent",
+    "lock": "python3 scripts/lock.py"
+  }
+}
