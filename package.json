@@ -1,5 +1,5 @@
 {
-  "name": "tradie-kit",
+  "name": "Utedocs",
   "private": true,
   "scripts": {
     "typecheck": "node scripts/guard.mjs syntax",
