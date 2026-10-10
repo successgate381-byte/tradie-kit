@@ -1,5 +1,5 @@
 {
- "note": "Features that must never disappear by accident. Rebuild on purpose with: npm run lock",
+ "note": "Features that must never disappear by accident. Every text, field and button below existed in the earlier app and must still be in UteDocs.",
  "strings": [
   "+ Add a line",
   "1. YOUR MINIMUM HOURLY RATE",
@@ -23,10 +23,10 @@
   "Chargeable hours a week",
   "Chargeable hours a year",
   "Clear this document",
-  "Customer",
+  "Client / customer name",
+  "Client / customer signature",
+  "Credited if they go ahead?",
   "Customer ABN",
-  "Customer name",
-  "Customer signature",
   "Date",
   "Deposit (%)",
   "Describe the change",
@@ -120,6 +120,7 @@
   "email",
   "excl",
   "fee",
+  "feec",
   "gst",
   "hrs",
   "incl",

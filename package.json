@@ -1,11 +1,19 @@
 {
-  "name": "tradie-kit",
+  "name": "utedocs",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "description": "UteDocs: quotes, tax invoices and variations for Australian tradies.",
   "scripts": {
-    "typecheck": "node scripts/guard.mjs syntax",
-    "lint": "node scripts/guard.mjs lock",
-    "test": "python3 tests/e2e.py",
-    "check": "npm run typecheck --silent && npm run lint --silent && npm run test --silent",
-    "lock": "python3 scripts/lock.py"
+    "dev": "node scripts/serve.mjs",
+    "typecheck": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+    "lint": "node scripts/lint.mjs",
+    "test": "node tests/run.mjs",
+    "check": "node scripts/check.mjs",
+    "ship": "node scripts/check.mjs && git push"
+  },
+  "devDependencies": {
+    "playwright": "1.56.0",
+    "typescript": "6.0.3"
   }
 }

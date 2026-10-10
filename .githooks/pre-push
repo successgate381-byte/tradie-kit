@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
+# Stops a push when typecheck, lint or tests fail. Set SKIP_CHECK=1 to bypass on purpose.
 [ -n "$SKIP_CHECK" ] && exit 0
-npm run check --silent || { echo "Checks failed, so the push was stopped."; exit 1; }
+node scripts/check.mjs || { echo "Checks failed, so the push was stopped."; exit 1; }
