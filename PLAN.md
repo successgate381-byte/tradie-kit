@@ -19,7 +19,7 @@ Tick a line only when it is built, tested and you said "clean".
 - Cloudflare, domain, public pages and Gumroad come AFTER Pro.
 
 ## Pro build ($47)
-- [ ] P1 Pro shell: /pro/ page runs the same app plus a Pro badge; extension points in Lite (hooks). Done when: every Lite test passes inside Pro.
+- [x] P1 Pro shell: /pro/ page runs the same app plus a Pro badge; extension points in Lite (hooks). Done when: every Lite test passes inside Pro.
 - [ ] P2 Client signature pad (Quote and Variation): finger or Apple Pencil, Clear and Undo, small image shown above the line on Preview and PDF, accepted date added. Done when: drawing test passes, page does not scroll while drawing.
 - [ ] P3 Progress claim tab (decision 2). Done when: maths tests pass.
 - [ ] P4 Xero invoice CSV export (decision 5). Done when: columns match Xero's template.

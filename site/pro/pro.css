@@ -1,2 +1,11 @@
 /* Pro-only touches. Everything else comes from ../app/app.css. */
 .pro-badge { background: var(--or); color: var(--navy); font: 700 11px var(--font); font-style: normal; letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; }
+
+/* P2: signature pad */
+.sigpad { margin: 22px 16px 0; }
+.sigpad + .sg { margin-top: 16px; }
+.sigpad-h { font: 700 12px var(--font); color: var(--navy); margin-bottom: 6px; }
+.sigpad canvas { display: block; width: 100%; aspect-ratio: 5 / 2; background: var(--in); border: 1px dashed #b9a87a; border-radius: 8px; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.sigpad .btns { margin: 8px 0 0; }
+.sigem { display: block; }
+.sigimg { display: block; height: 56px; width: auto; max-width: 100%; }
