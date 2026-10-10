@@ -3,6 +3,7 @@ import { ATO_STAMP, EXCLUSIONS, FOOT, LISTS, MARKUPS, NOTES, PRICE_TYPES, PRIVAC
 import { esc } from './format.js';
 import { marginForMarkup } from './calc.js';
 import { get, lineCount, tradeName } from './state.js';
+import { firstText, hooks } from './hooks.js';
 
 /* ---------- small building blocks ---------- */
 
@@ -226,6 +227,8 @@ ${foot()}</div>`;
 
 /** The HTML for one tab's editing screen. */
 export function renderTab(tab) {
+  const extra = firstText(hooks.render, tab);
+  if (extra !== null) return extra;
   if (tab === 'Start Here') return startHere();
   if (tab === 'My Details') return myDetails();
   if (tab === 'Variation') return variation();

@@ -1,0 +1,2 @@
+/* Pro-only touches. Everything else comes from ../app/app.css. */
+.pro-badge { background: var(--or); color: var(--navy); font: 700 11px var(--font); font-style: normal; letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; }

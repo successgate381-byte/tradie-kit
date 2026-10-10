@@ -12,5 +12,5 @@
     "noImplicitAny": false,
     "skipLibCheck": true
   },
-  "include": ["site/app/js/**/*.js"]
+  "include": ["site/app/js/**/*.js", "site/pro/js/**/*.js"]
 }

@@ -6,3 +6,5 @@
   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 /app/*
   Cache-Control: no-cache
+/pro/*
+  Cache-Control: no-cache

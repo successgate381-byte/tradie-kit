@@ -12,7 +12,9 @@ const walk = (dir) =>
   });
 
 const files = ['site', 'scripts', 'tests'].flatMap(walk);
-const appJs = files.filter((f) => f.startsWith('site/app/') && f.endsWith('.js'));
+// Files allowed to talk to a server. Added on purpose, one by one, in later Pro steps.
+const ALLOW_NETWORK = [];
+const appJs = files.filter((f) => (f.startsWith('site/app/') || f.startsWith('site/pro/')) && f.endsWith('.js'));
 const tools = files.filter((f) => /^(scripts|tests)\/.*\.mjs$/.test(f));
 const html = files.filter((f) => f.endsWith('.html'));
 const css = files.filter((f) => f.endsWith('.css'));
@@ -40,7 +42,10 @@ for (const f of appJs) {
   const lines = readFileSync(f, 'utf8').split('\n');
   lines.forEach((line, i) => {
     if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;
-    for (const [re, why] of bans) if (re.test(line)) problems.push(`${f}:${i + 1}: ${why}`);
+    for (const [re, why] of bans) {
+      if (why.includes('send data') && ALLOW_NETWORK.includes(f)) continue;
+      if (re.test(line)) problems.push(`${f}:${i + 1}: ${why}`);
+    }
   });
 }
 

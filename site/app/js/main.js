@@ -1,5 +1,6 @@
 // Starts the app: draws the open tab, fills the boxes and listens for typing and taps.
-import { DOC_TABS, LISTS, TABS } from './data.js';
+import { LISTS } from './data.js';
+import { allTabs, hooks, isDocTab, runAll } from './hooks.js';
 import { $, $$ } from './dom.js';
 import { esc, formatAbn, formatBsb, has, money, num } from './format.js';
 import { refresh } from './live.js';
@@ -52,20 +53,21 @@ function setList() {
   if (dl) dl.innerHTML = (LISTS[get('D', 'trade')] || LISTS.Electrician).map((x) => `<option value="${esc(x)}">`).join('');
 }
 
-function go(/** @type {string} */ tab) {
+export function go(/** @type {string} */ tab) {
   view.tab = tab;
-  const isDoc = DOC_TABS.includes(tab);
+  const isDoc = isDocTab(tab);
   document.body.classList.remove('pv');
   document.body.classList.toggle('hasp', isDoc);
   const nav = $('#nav');
   const main = $('#m');
   if (!nav || !main) return;
-  nav.innerHTML = TABS.map((x) => `<button role="tab" aria-selected="${x === tab}" data-t="${x}">${x}</button>`).join('');
+  nav.innerHTML = allTabs().map((x) => `<button role="tab" aria-selected="${x === tab}" data-t="${x}">${x}</button>`).join('');
   main.innerHTML = renderTab(tab) + (isDoc ? '<div class="pbar"><button class="b g" id="bk">Back to editing</button><button class="b o" id="pdf2">Save as PDF</button></div><div id="paper"></div>' : '');
   fill();
   vis();
   setList();
   refresh(tab);
+  runAll(hooks.afterRender, tab);
   scrollTo(0, 0);
 }
 
@@ -101,6 +103,7 @@ function onClick(/** @type {Event} */ ev) {
   const t = ev.target instanceof HTMLElement ? ev.target.closest('button') : null;
   if (!t) return;
   const tab = view.tab;
+  runAll(hooks.click, t, tab);
   if (t.dataset.t) go(t.dataset.t);
   if (t.id === 'pv') {
     document.body.classList.add('pv');

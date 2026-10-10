@@ -1,5 +1,6 @@
 // The clean finished document. Empty boxes are left out. This is what Preview and Save as PDF show.
 import { FOOT } from './data.js';
+import { firstText, hooks, pipe } from './hooks.js';
 import { addDays, esc, fmtDate, has, money, num, round2, safeUrl } from './format.js';
 import { depositFraction, leftToPay, sumLines, variationNewTotal } from './calc.js';
 import { get, gstRate, lineCount, linesOf, registered } from './state.js';
@@ -29,6 +30,11 @@ export function quoteTotal() {
 export function buildPaper(tab) {
   const P = document.getElementById('paper');
   if (!P) return;
+  const whole = firstText(hooks.paperFull, tab);
+  if (whole !== null) {
+    P.innerHTML = whole;
+    return;
+  }
   const D = (k) => get('D', k);
   const g = (k) => get(tab, k);
   const q = tab === 'Quote';
@@ -97,5 +103,5 @@ export function buildPaper(tab) {
     h += `<p class="accept"><b>${vr ? 'I approve this variation, the extra cost and any extra days shown above. The extra work starts after I approve.' : 'I accept this quote.'}</b></p>`;
     h += `<div class="sg"><div class="c"><em>${f('an')}</em><span>Client / customer name</span></div><div class="c"><em>${f('as')}</em><span>Client / customer signature</span></div><div class="c"><em>${f('ad')}</em><span>Date</span></div></div>`;
   }
-  P.innerHTML = h + `<p class="sm foot">${FOOT}</p>`;
+  P.innerHTML = pipe(hooks.paperAfter, h + `<p class="sm foot">${FOOT}</p>`, tab);
 }

@@ -5,6 +5,7 @@ import { depositFraction, leftToPay, rateCalc, sumLines, variationNewTotal } fro
 import { buildPaper, gstLabel, payHtml, quoteTotal } from './paper.js';
 import { get, gstRate, lineCount, linesOf, registered } from './state.js';
 import { DOC_TABS } from './data.js';
+import { hooks, isDocTab, runAll } from './hooks.js';
 
 /** Show the picked date as "6 Oct 2026" in every date box. */
 function showDates(tab) {
@@ -118,5 +119,6 @@ export function refresh(tab) {
   else if (tab === 'Rate Calculator') rateLive();
   else if (tab === 'My Details') detailsLive();
   else if (DOC_TABS.includes(tab)) documentLive(tab);
-  if (DOC_TABS.includes(tab)) buildPaper(tab);
+  runAll(hooks.refresh, tab);
+  if (isDocTab(tab)) buildPaper(tab);
 }
