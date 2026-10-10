@@ -68,5 +68,8 @@ export function startServer(root = 'site', port = 0) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const server = await startServer('site', Number(process.env.PORT) || 4173);
   const addr = server.address();
-  console.log('UteDocs is running. Open http://localhost:' + (typeof addr === 'object' && addr ? addr.port : '4173') + '/app/');
+  const port = typeof addr === 'object' && addr ? addr.port : 4173;
+  console.log('UteDocs is running.');
+  console.log('  Lite (free): http://localhost:' + port + '/app/');
+  console.log('  Pro:         http://localhost:' + port + '/pro/');
 }
