@@ -9,3 +9,9 @@
 .sigpad .btns { margin: 8px 0 0; }
 .sigem { display: block; }
 .sigimg { display: block; height: 56px; width: auto; max-width: 100%; }
+
+/* P4: Xero export */
+.xe { margin: 0 16px; }
+.xe .btns { margin: 8px 0; }
+.xe .warn { margin: 4px 0; }
+.xe .note { margin: 4px 0; }

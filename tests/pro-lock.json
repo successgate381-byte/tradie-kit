@@ -17,7 +17,12 @@
   "Work done to date",
   "THIS CLAIM (incl GST)",
   "Balance remaining on the contract",
-  "Check your state regulator before you rely on this form. This is not legal advice."
+  "Check your state regulator before you rely on this form. This is not legal advice.",
+  "XERO EXPORT (PRO, OPTIONAL)",
+  "Xero sales account code",
+  "Xero tax name for GST sales",
+  "Xero tax name for GST-free sales",
+  "Export for Xero (CSV)"
  ],
  "keys": [
   "no",
@@ -28,7 +33,10 @@
   "desc",
   "contract",
   "pct",
-  "prev"
+  "prev",
+  "xacct",
+  "xtax",
+  "xfree"
  ],
  "ids": [
   "sg-pad",
@@ -38,6 +46,7 @@
   "pdf",
   "pdf2",
   "clr",
-  "bk"
+  "bk",
+  "xe-csv"
  ]
 }

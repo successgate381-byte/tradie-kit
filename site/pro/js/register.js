@@ -3,6 +3,7 @@ import { $ } from '../../app/js/dom.js';
 import { hooks } from '../../app/js/hooks.js';
 import { mountPad, signaturePaper } from './signature.js';
 import { CLAIM_TAB, claimLive, claimPaper, claimScreen } from './claim.js';
+import { mountXero } from './xero.js';
 
 hooks.afterRender.push((tab) => {
   if (tab !== 'Start Here') return;
@@ -22,3 +23,6 @@ hooks.refresh.push((tab) => {
   if (tab === CLAIM_TAB) claimLive();
 });
 hooks.paperFull.push((tab) => (tab === CLAIM_TAB ? claimPaper() : null));
+
+// P4: Export for Xero button on the Tax Invoice tab, and the Xero settings on My Details.
+hooks.afterRender.push((tab) => mountXero(tab));
