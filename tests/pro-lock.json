@@ -1,0 +1,43 @@
+{
+ "note": "Pro features that must never disappear by accident. Each Pro step adds its own lines here.",
+ "strings": [
+  "Draw the client signature here (finger or Apple Pencil)",
+  "Undo",
+  "Clear signature",
+  "Progress Claim",
+  "PROGRESS CLAIM",
+  "CLAIM DETAILS",
+  "Claim no.",
+  "WHAT THIS CLAIM COVERS",
+  "Describe the work",
+  "THE MATHS",
+  "Contract total (incl GST)",
+  "Work complete to date (%)",
+  "Earlier claims on this job ($)",
+  "Work done to date",
+  "THIS CLAIM (incl GST)",
+  "Balance remaining on the contract",
+  "Check your state regulator before you rely on this form. This is not legal advice."
+ ],
+ "keys": [
+  "no",
+  "date",
+  "cust",
+  "site",
+  "qno",
+  "desc",
+  "contract",
+  "pct",
+  "prev"
+ ],
+ "ids": [
+  "sg-pad",
+  "sg-undo",
+  "sg-clear",
+  "pv",
+  "pdf",
+  "pdf2",
+  "clr",
+  "bk"
+ ]
+}

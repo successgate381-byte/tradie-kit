@@ -26,17 +26,17 @@ function control(scope, key, type, o = {}) {
 }
 
 /** A label and its box. */
-const row = (scope, key, label, type, o = {}) =>
+export const row = (scope, key, label, type, o = {}) =>
   `<div class="fr"${o.w ? ` id="${o.w}"` : ''}><label for="i-${key}">${label}</label>${control(scope, key, type, o)}${o.ex ? `<div class="ex">${esc(o.ex)}</div>` : ''}</div>`;
 
-const sec = (t) => `<div class="sec">${t}</div>`;
-const note = (t, cls = '') => `<div class="note ${cls}">${t}</div>`;
-const total = (label, id, cls = '') => `<div class="tr ${cls}"><span id="${id}l">${label}</span><span id="${id}"></span></div>`;
+export const sec = (t) => `<div class="sec">${t}</div>`;
+export const note = (t, cls = '') => `<div class="note ${cls}">${t}</div>`;
+export const total = (label, id, cls = '') => `<div class="tr ${cls}"><span id="${id}l">${label}</span><span id="${id}"></span></div>`;
 const plain = (a, b) => `<div class="tr plain"><span>${a}</span><span>${b}</span></div>`;
 const bz = (l, v) => `<div class="bz"><span>${l}</span><b>${esc(v)}</b></div>`;
 
 /** Business name band and the details list under it. */
-function band(title) {
+export function band(title) {
   const biz = [
     ['ABN', get('D', 'abn') || '00 000 000 000'],
     ['Licence', get('D', 'lic') || 'your licence no.'],
@@ -68,13 +68,13 @@ function lineRows(tab, withGst, heads) {
   return h + `<div class="btns tight"><button class="b g" id="addl">+ Add a line</button><button class="b g" id="rml">Remove last line</button></div>`;
 }
 
-const payBlock = () => `${sec('PAYMENT DETAILS')}<div class="pd" id="c-pay1"></div>`;
+export const payBlock = () => `${sec('PAYMENT DETAILS')}<div class="pd" id="c-pay1"></div>`;
 
-const buttons = () =>
+export const buttons = () =>
   `<div class="btns"><button class="b" id="pv">Preview</button><button class="b o" id="pdf">Save as PDF</button><button class="b g" id="clr">Clear this document</button></div>` +
   note('Preview and Save as PDF show the clean finished document, without the empty boxes. In the print window choose Save as PDF as the printer. Your work is saved on this device only.');
 
-const foot = () => note(FOOT);
+export const foot = () => note(FOOT);
 
 /* ---------- the nine tabs ---------- */
 

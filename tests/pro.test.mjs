@@ -5,6 +5,7 @@ import { chromium } from 'playwright';
 import { startServer } from '../scripts/serve.mjs';
 
 const TABS = ['Start Here', 'My Details', 'Quote', 'Tax Invoice', 'Invoice', 'Variation', 'Rate Calculator', 'Line Items', 'Worked Examples'];
+const PRO_TABS = ['Start Here', 'My Details', 'Quote', 'Tax Invoice', 'Invoice', 'Variation', 'Progress Claim', 'Rate Calculator', 'Line Items', 'Worked Examples'];
 const server = await startServer('site', 0);
 const ORIGIN = 'http://127.0.0.1:' + server.address().port;
 const LITE = ORIGIN + '/app/';
@@ -46,8 +47,8 @@ for (const [label, kind] of [['desktop', DESKTOP], ['phone', PHONE]]) {
   await test(`Pro opens clean on ${label}: nine tabs, PRO badge, no errors, nothing sent out`, async () => {
     const pg = await open(PRO, kind);
     assert.equal(await pg.locator('.top .pro-badge').textContent(), 'PRO');
-    assert.deepEqual(await pg.locator('nav button').allTextContents(), TABS);
-    for (const t of TABS) {
+    assert.deepEqual(await pg.locator('nav button').allTextContents(), PRO_TABS);
+    for (const t of PRO_TABS) {
       await tab(pg, t);
       const b = await pg.evaluate(() => document.getElementById('m').textContent || '');
       assert.ok(!/undefined|NaN|\[object/.test(b), t + ': shows undefined or NaN');

@@ -4,7 +4,7 @@ import { DOC_TABS, TABS } from './data.js';
 
 /** @typedef {(...args: any[]) => any} Hook */
 
-/** @type {{ tabs: string[], docTabs: string[], render: Hook[], afterRender: Hook[], refresh: Hook[], paperFull: Hook[], paperAfter: Hook[], click: Hook[] }} */
+/** @type {{ tabs: string[], docTabs: string[], render: Hook[], afterRender: Hook[], refresh: Hook[], paperFull: Hook[], paperAfter: Hook[], click: Hook[], tabAfter: Record<string, string[]> }} */
 export const hooks = {
   /** Extra tab names, added after the Lite tabs. */
   tabs: [],
@@ -22,9 +22,11 @@ export const hooks = {
   paperAfter: [],
   /** (button, tab) => run on every button tap. */
   click: [],
+  /** Extra tabs placed straight after a Lite tab, for example { Variation: ['Progress Claim'] }. */
+  tabAfter: {},
 };
 
-export const allTabs = () => [...TABS, ...hooks.tabs];
+export const allTabs = () => [...TABS.flatMap((t) => [t, ...(hooks.tabAfter[t] || [])]), ...hooks.tabs];
 export const isDocTab = (tab) => DOC_TABS.includes(tab) || hooks.docTabs.includes(tab);
 
 /** Ask each hook in turn. The first one that gives back text wins. Otherwise null. */
